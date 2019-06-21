@@ -1,0 +1,90 @@
+<div class="container">
+  <mat-card>
+    <mat-toolbar color="primary">
+      <h2 class="header">Registration Form With Validations</h2>
+    </mat-toolbar>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <mat-form-field>
+        <input matInput placeholder="Enter Your Name" formControlName="name" required>
+        <mat-error *ngIf="registerForm.controls.name.invalid">Please Enter Your Name</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Enter Your Email" formControlName="email" required>
+        <mat-error *ngIf="registerForm.controls.email.errors?.required">Please Enter Your Email</mat-error>
+        <mat-error *ngIf="registerForm.controls.email.hasError('email')">This is a Invalid Email</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Create Your Password" formControlName="pass" required [type]="hide ? 'password' : 'text'">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="registerForm.controls.pass.errors?.required">Please Create Your Password</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field>
+        <input matInput placeholder="Confirm Your Password" (keypress)="checkPassword()" formControlName="confirmPass" required (keyup)="checkPassword()">
+      </mat-form-field>
+      <mat-error *ngIf="misMatch">Password Do Not Match</mat-error> <!-- We need to Write OutSide the Mat-form-Field -->
+
+      <mat-form-field>
+        <input matInput placeholder="Enter Mobile Number" formControlName="mobile" minlength="10" maxlength="10" required numbersOnly>
+        <mat-error *ngIf="registerForm.controls.mobile.errors?.required">Mobile Number is Required</mat-error>
+        <mat-error *ngIf="registerForm.controls.mobile.errors?.minlength || registerForm.controls.mobile.errors?.maxlength">Mobile Number Must be 10 digits Only</mat-error>
+        <mat-error *ngIf="registerForm.controls.mobile.errors?.pattern">Number Must be Digits Only</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Enducation Details</mat-label>
+        <mat-select formControlName="education" required (selectionChange)="getOptions($event.value)">
+          <mat-option>select one Option</mat-option>
+          <mat-option *ngFor="let education of educations" [value]="education.value">
+            {{education.viewValue}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="registerForm.controls.education.errors?.required">Please Select One Option</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <textarea matInput placeholder="Enter Your Address" minlength="20" formControlName="address" required></textarea>
+        <mat-error *ngIf="registerForm.controls.address.errors?.required">Please Enter Your Address</mat-error>
+      </mat-form-field>
+
+      <section>
+        <mat-radio-group formControlName="gender" required>
+          <mat-label> Gender : </mat-label>
+          <mat-radio-button class="radio-margin" value="male">Male</mat-radio-button>
+          <mat-radio-button class="radio-margin" value="female">Female</mat-radio-button>
+        </mat-radio-group>
+      </section>
+
+      <section>
+        <mat-label> Hobbies : </mat-label>
+        <mat-checkbox class="checkbox-margin" value="games" formControlName="game" #game>Playing Games</mat-checkbox>
+        <mat-checkbox class="checkbox-margin" value="movies" formControlName="movie" #movie>Watching Movies</mat-checkbox>
+      </section>
+
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Choose Your Date Of Birth" formControlName="dob" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="registerForm.controls.dob.errors?.required">Please Choose Your Date Of Birth</mat-error>
+      </mat-form-field>
+
+      <div>
+        <mat-checkbox class="checkbox-margin" #terms>Accept Terms and Conditions</mat-checkbox>
+      </div>
+
+      <div>
+        <button class="btn btn-success" [disabled]="!registerForm.valid || !terms.checked || (!game.checked && !movie.checked)">Register</button>
+      </div>
+
+    </form>
+  </mat-card>
+</div>
+
+
+
+
